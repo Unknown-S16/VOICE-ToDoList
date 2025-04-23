@@ -21,7 +21,7 @@ const VoiceInput = ({ onAdd }) => {
     recognition.onresult = async (event) => {
       const text = event.results[0][0].transcript;
       try {
-        const res = await axios.post('http://localhost:5000/api/tasks/add', { text });
+        const res = await axios.post('https://voice-todolist.onrender.com/api/tasks/add', { text });
         onAdd(res.data);
       } catch (err) {
         console.error("Error saving task:", err);

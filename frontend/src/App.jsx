@@ -6,15 +6,16 @@ import { Trash2,ClipboardX } from "lucide-react";
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const API ="https://voice-todolist.onrender.com";
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/tasks")
+      .get(`${API}/api/tasks`)
       .then((res) => setTasks(res.data.map((task) => ({ ...task }))))
       .catch((err) => console.error(err));
   }, []);
   const handleToggleComplete = async (id, currentStatus) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/tasks/${id}`, {
+      const res = await axios.put(`${API}/api/tasks/${id}`, {
         completed: !currentStatus,
       });
       setTasks(
@@ -32,7 +33,7 @@ function App() {
   };
   const handleDeleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+      await axios.delete(`${API}/api/tasks/${id}`);
       setTasks(tasks.filter((task) => task._id !== id));
     } catch (err) {
       console.error("Failed to delete task:", err);
