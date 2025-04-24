@@ -44,5 +44,8 @@ router.delete('/:id', async (req, res) => {
   await Task.findByIdAndDelete(id);
   res.json({ success: true });
 });
+router.get('/ping', (req, res) => {
+  res.send('pong');
+});
 
 module.exports = router;
