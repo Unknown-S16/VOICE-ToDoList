@@ -60,7 +60,7 @@ const VoiceInput = ({ onAdd }) => {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      className="bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600"
+      className="bg-pink-900 text-white px-4 py-2 rounded hover:bg-pink-800"
     >
        Hold to Speak
     </button>

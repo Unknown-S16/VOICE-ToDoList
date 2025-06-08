@@ -41,16 +41,20 @@ function App() {
   };
 
   return (
-    <div className="p-[5%] max-w-xl mx-auto md:border my-[5%]  h-screen">
-      <h2 className="text-3xl font-bold mb-4"> Voice To-Do List</h2>
+    
+    <>   
+     <video src="./bg.mp4" autoPlay muted loop className="bg-video opacity-90 h-screen w-screen object-cover -z-2 absolute"></video>
+
+    <div className="p-[3%] max-w-xl mx-auto   h-screen">
+      <h2 className="text-3xl text-white font-bold mb-4"> Voice To-Do List</h2>
       <VoiceInput onAdd={handleAddTask} />
-      <ul className="mt-6 space-y-2 border border-gray-300 p-5 min-h-[70%]">
+      <ul className="mt-6 space-y-2  bg-pink-800 rounded-xl p-5 min-h-[80%]">
         {tasks.map((task) => (
           <li
             key={task._id}
             onClick={() => handleToggleComplete(task._id, task.completed)}
-            className={`bg-gray-200 p-2  relative rounded border border-gray-300 cursor-pointer ${
-              task.completed && "line-through text-gray-500"
+            className={`bg-pink-300 px-[5%] py-[2%] text-pink-900 text-lg relative rounded cursor-pointer ${
+              task.completed && "line-through "
             }`}
           >
             {task.text}
@@ -59,7 +63,7 @@ function App() {
                 e.stopPropagation(); // prevent li onClick
                 handleDeleteTask(task._id);
               }}
-              className="text-red-500 hover:text-red-700 absolute right-10"
+              className="text-pink-700 my-1 hover:text-pink-800 absolute right-10"
               title="Delete"
             >
               <Trash2 size={18} />
@@ -70,6 +74,8 @@ function App() {
         </li>
       </ul>
     </div>
+    </>
+
   );
 }
 
