@@ -8,8 +8,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: "https://voice-to-do-list.vercel.app",
-  credentials: true
+  origin: "https://voice-to-do-list.vercel.app"
 }));
 
 app.use(express.json());
