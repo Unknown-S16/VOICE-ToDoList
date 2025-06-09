@@ -1,28 +1,45 @@
-import React, { useRef ,useState} from 'react';
-import axios from 'axios';
+import React, { useRef, useState, useEffect } from "react";
+import axios from "axios";
+
+const API = "https://voice-todolist.onrender.com";
 
 const VoiceInput = ({ onAdd }) => {
   const recognitionRef = useRef(null);
-  const [on , setON]=useState(false);
-  
+  const [on, setON] = useState(false);
 
-  const initRecognition = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, []);
+
+  const handleStart = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Speech Recognition not supported in this browser.");
-      return null;
+      return;
+    }
+
+    if (recognitionRef.current) {
+      recognitionRef.current.abort();
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
+    recognition.lang = "en-US";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
     recognition.onresult = async (event) => {
-      const text = event.results[0][0].transcript;
+      const text = event.results[0][0].transcript.trim();
+      console.log("Recognized text:", text);
+      if (!text) return;
+
       try {
-        const res = await axios.post('https://voice-todolist.onrender.com/api/tasks/add', { text });
-        onAdd(res.data);
+        const res = await axios.post(`${API}/api/tasks/add`, { text });
+        if (onAdd) onAdd(res.data);
       } catch (err) {
         console.error("Error saving task:", err);
       }
@@ -32,41 +49,42 @@ const VoiceInput = ({ onAdd }) => {
       console.error("Recognition error:", e.error);
     };
 
-    return recognition;
+    recognition.onend = () => {
+      setON(false);
+      console.log("Speech recognition ended");
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setON(true);
   };
 
-  const handleMouseDown = () => {
-    const recognition = initRecognition();
-    if (recognition) {
-      recognitionRef.current = recognition;
-      recognition.start();
-      setON(true)
-    }
-  };
-
-  const handleMouseUp = () => {
+  const handleStop = () => {
     if (recognitionRef.current) {
-      setTimeout(() => {
-        recognitionRef.current.stop();
-        setON(false)
-      }, 1000); 
+      recognitionRef.current.stop();
     }
   };
-  
 
   return (
-    <div className='flex '>    
-    <button
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      className="bg-pink-900 text-white px-4 py-2 rounded hover:bg-pink-800"
-    >
-       Hold to Speak
-    </button>
-    {on&&<img className='h-10 w-[30%] object-cover contrast-150 hue-rotate-300 saturate-150' src='./listen.gif'/>}    
+    <div className="flex items-center gap-3">
+      <button
+        onMouseDown={handleStart}
+        onMouseUp={handleStop}
+        onMouseLeave={handleStop}
+        onTouchStart={handleStart}
+        onTouchEnd={handleStop}
+        className="bg-pink-900 text-white px-4 py-2 rounded hover:bg-pink-800"
+      >
+        Hold to Speak
+      </button>
+      {on && (
+        <img
+          className="h-10 w-[30%] object-cover contrast-150 hue-rotate-300 saturate-150"
+          src="./listen.gif"
+          alt="Listening"
+        />
+      )}
     </div>
-
   );
 };
 
